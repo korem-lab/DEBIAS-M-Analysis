@@ -2,7 +2,7 @@
 
 # Benchmarking and analysis for DEBIAS-M
 
-Welcome to DEBIAS-M! DEBIAS-M is a computational methods designed to identify and correct for the predominant issue of sequencing bias in microbiome data. In this Codeocean capsule, we provide full code and data to replicate the analyses from the DEBIAS-M manuscript. 
+Welcome to DEBIAS-M! DEBIAS-M is a computational methods designed to identify and correct for the predominant issue of sequencing bias in microbiome data. In this copy of our Codeocean capsule, we provide full code and data to replicate the analyses from the DEBIAS-M manuscript. 
 
 ## Code Walkthrough
 The entire analysis from this capsule can be executed by running the `code/run` script, which calls the necessary functions from within the `code` directory in the proper order. We structure the rest of the code directory analysis as follows:
@@ -35,5 +35,5 @@ All processed data used in our analysess is stored in the `data` directory.
 The environment used in this analysis involes python 3.6. We provide a docker file which can be used to set up the environment for a successful capsule run.
 
 ## Support
-If you have any questions regarding the analyis outlined in this capsule, or run into any issues when using SCRuB, please reach out via our [issues page](https://github.com/korem-lab/DEBIAS-M/issues).
+If you have any questions regarding the analyis outlined in this capsule, or run into any issues when using DEBIAS-M, please reach out via our [issues page](https://github.com/korem-lab/DEBIAS-M/issues).
 
