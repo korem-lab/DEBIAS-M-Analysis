@@ -1,0 +1,174 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+getwd()
+```
+
+
+```{r}
+library(melonnpan)
+df <- read.csv('../../results/Metabolites/df_inputs.csv', row.names=1)
+md <- read.csv('../../results/Metabolites/df_metadata.csv', row.names=1)
+```
+
+
+```{r}
+
+metag_train <- df[df$X0==1, 2:ncol(df)]
+metag_train <- metag_train[, (metag_train > 0 ) %>% colSums() > 150]
+metag_val <- df[df$X0!=1, colnames(metag_train)]
+
+metag_train <- metag_train[, (metag_val > 0 ) %>% colSums() > 25]
+metag_val <- metag_val[, (metag_val > 0 ) %>% colSums() > 25]
+
+metab <- md[, 4:748] / md[, 4:748] %>% rowSums
+metab <- metab[, ( metab != 0 ) %>% colSums() > 200]
+
+metab <- metab[, ( metab %>% apply(MARGIN=2, FUN = function(x) length(unique(x))) > 5 )]
+
+
+melonnpan.train(metab = metab[row.names(metag_train),], 
+                metag =   metag_train / metag_train %>% rowSums , 
+                output='melonnpan_out/', 
+                cutoff=1e3#.5
+                )
+
+?melonnpan.train
+
+list.files('melonnpan_out/')
+
+
+
+melonnpan.predict( metag_val / metag_val %>% rowSums, 
+                   weight.matrix = 'melonnpan_out/MelonnPan_Trained_Weights.txt',
+                   train.metag = metag_train / metag_train %>% rowSums,
+                   output='melonnpan_out/')
+
+
+metab %>% write_csv('melonnpan_out/true_metabs.csv')
+
+# ?melonnpan.predict
+
+
+metab %>% dim
+
+# colnames(md)[749:ncol(md)]
+```
+
+
+```{r}
+dir.create('melonnpan_out2')
+
+metag_train <- df[df$X0!=1, 2:ncol(df)]
+metag_train <- metag_train[, (metag_train > 0 ) %>% colSums() > 20]
+metag_val <- df[df$X0==1, colnames(metag_train)]
+
+metag_train <- metag_train[, (metag_val > 0 ) %>% colSums() > 20]
+metag_val <- metag_val[, (metag_val > 0 ) %>% colSums() > 20]
+
+metab <- md[, 4:748] / md[, 4:748] %>% rowSums
+# metab <- metab[, ( metab != 0 ) %>% colSums() > 200]
+
+metab <- metab[, ( metab[row.names(metag_train), ] %>% 
+                     apply(MARGIN=2, FUN = function(x) length(unique(x))) > 5 )]
+
+
+melonnpan.train(metab = metab[row.names(metag_train),], 
+                metag =   metag_train / metag_train %>% rowSums , 
+                output='melonnpan_out2/'
+                )
+
+list.files('melonnpan_out/')
+
+
+
+melonnpan.predict( metag_val / metag_val %>% rowSums, 
+                   weight.matrix = 'melonnpan_out2/MelonnPan_Trained_Weights.txt',
+                   train.metag = metag_train / metag_train %>% rowSums,
+                   output='melonnpan_out2/')
+
+
+metab %>% write_csv('melonnpan_out2/true_metabs.csv')
+```
+
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+
+df <- read.csv('mm_to_mp1/input.csv', row.names=1)
+
+metag_train <- df[df$X0==1, 2:ncol(df)]
+metag_train <- metag_train[, (metag_train > 0 ) %>% colSums() > 150]
+metag_val <- df[df$X0!=1, colnames(metag_train)]
+
+metag_train <- metag_train[, (metag_val > 0 ) %>% colSums() > 25]
+metag_val <- metag_val[, (metag_val > 0 ) %>% colSums() > 25]
+
+metab <- md[, 4:748] / md[, 4:748] %>% rowSums
+metab <- metab[, ( metab != 0 ) %>% colSums() > 200]
+
+metab <- metab[, ( metab %>% apply(MARGIN=2, FUN = function(x) length(unique(x))) > 5 )]
+
+
+melonnpan.train(metab = metab[row.names(metag_train),], 
+                metag =   metag_train / metag_train %>% rowSums , 
+                output='mm_to_mp1/', 
+                cutoff=1e3
+                )
+
+
+
+melonnpan.predict( metag_val / metag_val %>% rowSums, 
+                   weight.matrix = 'mm_to_mp1/MelonnPan_Trained_Weights.txt',
+                   train.metag = metag_train / metag_train %>% rowSums,
+                   output='mm_to_mp1/')
+
+
+metab %>% write_csv('mm_to_mp1/true_metabs.csv')
+
+```
+
+
+```{r}
+df <- read.csv('mm_to_mp2/input.csv', row.names=1)
+
+metag_train <- df[df$X0!=1, 2:ncol(df)]
+metag_train <- metag_train[, (metag_train > 0 ) %>% colSums() > 20]
+metag_val <- df[df$X0==1, colnames(metag_train)]
+
+metag_train <- metag_train[, (metag_val > 0 ) %>% colSums() > 20]
+metag_val <- metag_val[, (metag_val > 0 ) %>% colSums() > 20]
+
+metab <- md[, 4:748] / md[, 4:748] %>% rowSums
+
+metab <- metab[, ( metab[row.names(metag_train), ] %>% 
+                     apply(MARGIN=2, FUN = function(x) length(unique(x))) > 5 )]
+
+
+melonnpan.train(metab = metab[row.names(metag_train),], 
+                metag =   metag_train / metag_train %>% rowSums , 
+                output='mm_to_mp2/'
+                )
+
+
+
+melonnpan.predict( metag_val / metag_val %>% rowSums, 
+                   weight.matrix = 'mm_to_mp2/MelonnPan_Trained_Weights.txt',
+                   train.metag = metag_train / metag_train %>% rowSums,
+                   output='mm_to_mp2/')
+
+
+metab %>% write_csv('mm_to_mp2/true_metabs.csv')
+```
+
+
+
+
+
