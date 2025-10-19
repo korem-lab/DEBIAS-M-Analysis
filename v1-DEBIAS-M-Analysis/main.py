@@ -94,58 +94,58 @@ def run_analyses(task,
         eval('{}_functions'.format(task))(md, df_with_batch, conq_out, comb_out)
         return(None)
 
+    ### Code that implements the Fig. 2 analyses
+    results_dict = all_classification_pipelines.run_predictions(y.loc[inds], 
+                                                                df_with_batch.loc[inds], 
+                                                                df_conqur = conq_out.loc[inds], 
+                                                                df_combat = comb_out.loc[inds],
+                                                                do_clr_transform=False,
+                                             b_str= batch_weight_feature_and_nbatchpairs_scaling( 1e4, df_with_batch ),
+                                                                df_snm = [ snm_out.loc[inds] if snm_out is not None
+                                                                          else None][0], 
+                                                                df_mup= [ mup_out.loc[inds] 
+                                                                 if mup_out is not None
+                                                                          else None][0],
+                                                                 df_perc= [ perc_out.loc[inds] 
+                                                                  if perc_out is not None
+                                                                           else None][0],
+                                                                df_pls= [ pls_out.loc[inds] 
+                                                                 if pls_out is not None
+                                                                          else None][0],
+                                                                min_epochs=25
+                                                                )
     
-#     results_dict = all_classification_pipelines.run_predictions(y.loc[inds], 
-#                                                                 df_with_batch.loc[inds], 
-#                                                                 df_conqur = conq_out.loc[inds], 
-#                                                                 df_combat = comb_out.loc[inds],
-#                                                                 do_clr_transform=False,
-#                                              b_str= batch_weight_feature_and_nbatchpairs_scaling( 1e4, df_with_batch ),
-#                                                                 df_snm = [ snm_out.loc[inds] if snm_out is not None
-#                                                                           else None][0], 
-#                                                                 df_mup= [ mup_out.loc[inds] 
-#                                                                  if mup_out is not None
-#                                                                           else None][0],
-#                                                                  df_perc= [ perc_out.loc[inds] 
-#                                                                   if perc_out is not None
-#                                                                            else None][0],
-#                                                                 df_pls= [ pls_out.loc[inds] 
-#                                                                  if pls_out is not None
-#                                                                           else None][0],
-#                                                                 min_epochs=25
-#                                                                 )
+    studies = pd.concat([md.Study, df_with_batch[0]], axis=1).drop_duplicates().sort_values(0)
     
-#     studies = pd.concat([md.Study, df_with_batch[0]], axis=1).drop_duplicates().sort_values(0)
+    print(results_dict)
     
-#     print(results_dict)
-    
-#     summary_auroc_df = pd.DataFrame({'auROC': flatten( [b for a,b in \
-#                                                        results_dict['aurocs'].items()] ), 
-#                                      'Group': flatten( [ [a]*len( results_dict['aurocs']['linear'])
-#                                                       for a in results_dict['aurocs']]),
-#                                      'auPR': flatten( [b for a,b in \
-#                                                        results_dict['auprs'].items()] ),
-#                                     })
+    summary_auroc_df = pd.DataFrame({'auROC': flatten( [b for a,b in \
+                                                       results_dict['aurocs'].items()] ), 
+                                     'Group': flatten( [ [a]*len( results_dict['aurocs']['linear'])
+                                                      for a in results_dict['aurocs']]),
+                                     'auPR': flatten( [b for a,b in \
+                                                       results_dict['auprs'].items()] ),
+                                    })
 
-#     studies = pd.concat([md.Study, df_with_batch[0]], axis=1).drop_duplicates()\
-#                         .reset_index()
-#     summary_auroc_df = pd.concat([summary_auroc_df, 
-#                                       studies], 
-#                                       axis=1
-#                                     )
+    studies = pd.concat([md.Study, df_with_batch[0]], axis=1).drop_duplicates()\
+                        .reset_index()
+    summary_auroc_df = pd.concat([summary_auroc_df, 
+                                      studies], 
+                                      axis=1
+                                    )
 
-#     # save the boxplot
-#     plotting.produce_auroc_boxplot(summary_auroc_df,
-#                 out_path='../results/{}/auroc-boxplot-linear.pdf'.format(task), 
-#                                   sig_dict=results_dict['is_sig']
-#                                   )
+    # save the boxplot
+    plotting.produce_auroc_boxplot(summary_auroc_df,
+                out_path='../results/{}/auroc-boxplot-linear.pdf'.format(task), 
+                                  sig_dict=results_dict['is_sig']
+                                  )
     
     
-#     plotting.produce_auroc_boxplot(summary_auroc_df,
-#                 out_path='../results/{}/auroc-boxplot-linear.pdf'.format(task), 
-#                                   hide_axes=False, 
-#                                   sig_dict=results_dict['is_sig']
-#                                   )
+    plotting.produce_auroc_boxplot(summary_auroc_df,
+                out_path='../results/{}/auroc-boxplot-linear.pdf'.format(task), 
+                                  hide_axes=False, 
+                                  sig_dict=results_dict['is_sig']
+                                  )
     
 #     ## load plsda(clr) 
     if os.path.exists('../data/{}/CLR-PLSDAbatch_out.csv'.format(task)):
@@ -197,19 +197,19 @@ def run_analyses(task,
                                   hide_axes=False, 
                                   sig_dict=results_dict['is_sig'])
     
-#     eval('{}_functions'.format(task))(md, df_with_batch, conq_out, comb_out)
+    eval('{}_functions'.format(task))(md, df_with_batch, conq_out, comb_out)
     
     return(None)
             
 
 
 def main(task_list = [
-#                        'Metabolites',
+                        'Metabolites',
                         'Cervix',
                         'CRC',
                         'HIVRC', 
-#                        'CRC_with_labels', 
-#                        'HIVRC', 
+                        'CRC_with_labels', 
+                        'HIVRC', 
                      ] ):
     ## for data setup
     data_path_map = {a:'../data/{}'.format(a) for a in task_list }
